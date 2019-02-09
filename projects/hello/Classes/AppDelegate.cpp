@@ -1,6 +1,8 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
 
+#include <thread>
+
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -29,6 +31,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // run
     pDirector->runWithScene(pScene);
+
+    //
+    CCLog("> Current cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+    std::thread th ([pDirector]() {
+        CCLog("> Hello from thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+        pDirector->getScheduler()->performFunctionInCocosThread([]() {
+            CCLog("> Hello from cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+        });
+    });
+    th.join();
 
     return true;
 }
