@@ -11,6 +11,12 @@ cocos2d-x
 4. Android Studio support
 5. Keep iOS,Android,Win32,Mac platform
 6. Remove Javascript
+7. Add `void CCScheduler::performFunctionInCocosThread(const std::function<void ()> &function)`
 
 [cocos2d-x][1] is a multi-platform 2D game framework in C++, branched on
 [cocos2d-iphone][2] and licensed under MIT.
+
+
+[1]: http://www.cocos2d-x.org "cocos2d-x"
+[2]: http://www.cocos2d-iphone.org "cocos2d for iPhone"
+
