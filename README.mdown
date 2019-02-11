@@ -15,6 +15,8 @@ cocos2d-x
 8. Support 64bit Android
 9. c++11 runtime
 10. Add CCScheduler::performFunctionInCocosThread
+11. libcurl support Android arm64
+12. libwebsocket support Android arm64
 
     ```c++
     CCLog("> Current cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
@@ -30,10 +32,6 @@ cocos2d-x
 [cocos2d-x][1] is a multi-platform 2D game framework in C++, branched on
 [cocos2d-iphone][2] and licensed under MIT.
 
-
-## TODO
-1. [ ] libcurl, maybe need to add OpenSSL
-2. [ ] libwebsocket
 
 [1]: http://www.cocos2d-x.org "cocos2d-x"
 [2]: http://www.cocos2d-iphone.org "cocos2d for iPhone"
