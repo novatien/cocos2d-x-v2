@@ -31,6 +31,9 @@ cocos2d-x
 [cocos2d-iphone][2] and licensed under MIT.
 
 
+## TODO
+1. [ ] libcurl, maybe need to add OpenSSL
+2. [ ] libwebsocket
+
 [1]: http://www.cocos2d-x.org "cocos2d-x"
 [2]: http://www.cocos2d-iphone.org "cocos2d for iPhone"
-
