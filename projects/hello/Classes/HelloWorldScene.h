@@ -3,6 +3,9 @@
 
 #include "cocos2d.h"
 
+#include "network/HttpClient.h"
+USING_NS_CC_EXT;
+
 class HelloWorld : public cocos2d::CCLayer
 {
 public:
@@ -17,6 +20,8 @@ public:
     
     // implement the "static node()" method manually
     CREATE_FUNC(HelloWorld);
+    
+    void onHttp(CCHttpClient* client, CCHttpResponse* response);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

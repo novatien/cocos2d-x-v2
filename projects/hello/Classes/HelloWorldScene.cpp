@@ -1,5 +1,7 @@
 #include "HelloWorldScene.h"
 
+#include "network/HttpClient.h"
+
 USING_NS_CC;
 
 CCScene* HelloWorld::scene()
@@ -72,6 +74,16 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
     this->addChild(pSprite, 0);
+
+    CCLog("onHttp");
+    auto req = new CCHttpRequest();
+    req->setHeaders({
+       "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0"
+    });
+    req->setUrl("https://www.baidu.com/");
+    req->setRequestType(CCHttpRequest::kHttpGet);
+    req->setResponseCallback(this, httpresponse_selector(HelloWorld::onHttp));
+    CCHttpClient::getInstance()->send(req);
     
     return true;
 }
@@ -87,4 +99,10 @@ void HelloWorld::menuCloseCallback(CCObject* pSender)
     exit(0);
 #endif
 #endif
+}
+
+void HelloWorld::onHttp(CCHttpClient* client, CCHttpResponse* response)
+{
+    std::string buf(response->getResponseData()->data());
+    CCLog("%s:%s", __FUNCTION__, buf.data());
 }
