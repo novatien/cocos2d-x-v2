@@ -155,7 +155,7 @@ LOCAL_SRC_FILES += AssetsManager/AssetsManager.cpp
 LOCAL_SRC_FILES += network/HttpClient.cpp
 
 ## websocket
-# LOCAL_SRC_FILES += network/WebSocket.cpp
+LOCAL_SRC_FILES += network/WebSocket.cpp
 
 LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocosdenshion_static
@@ -163,7 +163,7 @@ LOCAL_WHOLE_STATIC_LIBRARIES += box2d_static
 LOCAL_WHOLE_STATIC_LIBRARIES += chipmunk_static
 
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_curl_static
-#LOCAL_WHOLE_STATIC_LIBRARIES += libwebsockets_static
+LOCAL_WHOLE_STATIC_LIBRARIES += libwebsockets_static
 
 LOCAL_CFLAGS += -DCC_ENABLE_CHIPMUNK_INTEGRATION=1
 LOCAL_EXPORT_CFLAGS += -DCC_ENABLE_CHIPMUNK_INTEGRATION=1
@@ -187,4 +187,4 @@ $(call import-module,CocosDenshion/android)
 $(call import-module,external/Box2D)
 $(call import-module,external/chipmunk)
 $(call import-module,cocos2dx/platform/third_party/android/prebuilt/libcurl)
-#$(call import-module,external/libwebsockets/android)
+$(call import-module,external/libwebsockets/android)
