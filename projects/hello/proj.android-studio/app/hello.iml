@@ -132,6 +132,9 @@
     <content url="file://$MODULE_DIR$/../../../../cocos2dx/touch_dispatcher">
       <sourceFolder url="file://$MODULE_DIR$/../../../../cocos2dx/touch_dispatcher" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../../../../extensions/AssetsManager">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/AssetsManager" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../../extensions/CCBReader">
       <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/CCBReader" isTestSource="false" />
     </content>
@@ -239,6 +242,9 @@
     </content>
     <content url="file://$MODULE_DIR$/../../../../extensions/LocalStorage">
       <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/LocalStorage" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../extensions/network">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/network" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../../../../extensions/physics_nodes">
       <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/physics_nodes" isTestSource="false" />
