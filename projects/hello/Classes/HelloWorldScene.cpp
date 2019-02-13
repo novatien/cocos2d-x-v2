@@ -76,10 +76,10 @@ bool HelloWorld::init()
     this->addChild(pSprite, 0);
 
     CCLog("onHttp");
-    auto req = new CCHttpRequest();
-    req->setHeaders({
-       "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0"
-    });
+    CCHttpRequest* req = new CCHttpRequest();
+    std::vector<std::string> headers;
+    headers.push_back("User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0");
+    req->setHeaders(headers);
     req->setUrl("https://www.baidu.com/");
     req->setRequestType(CCHttpRequest::kHttpGet);
     req->setResponseCallback(this, httpresponse_selector(HelloWorld::onHttp));
