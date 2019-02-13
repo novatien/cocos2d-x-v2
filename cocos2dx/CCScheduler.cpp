@@ -166,7 +166,7 @@ void CCTimer::update(float dt)
                 }
                 m_fElapsed = 0;
             }
-        }    
+        }
         else
         {//advanced usage
             m_fElapsed += dt;
@@ -246,7 +246,9 @@ CCScheduler::CCScheduler(void)
 , m_bUpdateHashLocked(false)
 , m_pScriptHandlerEntries(NULL)
 {
+#if (USING_V3_CODE > 0)
     _functionsToPerform.reserve(30);
+#endif // USING_V3_CODE
 }
 
 CCScheduler::~CCScheduler(void)
@@ -306,7 +308,7 @@ void CCScheduler::scheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget, 
     {
         pElement->timers = ccArrayNew(10);
     }
-    else 
+    else
     {
         for (unsigned int i = 0; i < pElement->timers->num; ++i)
         {
@@ -317,7 +319,7 @@ void CCScheduler::scheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget, 
                 CCLOG("CCScheduler#scheduleSelector. Selector already scheduled. Updating interval from: %.4f to %.4f", timer->getInterval(), fInterval);
                 timer->setInterval(fInterval);
                 return;
-            }        
+            }
         }
         ccArrayEnsureExtraCapacity(pElement->timers, 1);
     }
@@ -325,7 +327,7 @@ void CCScheduler::scheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget, 
     CCTimer *pTimer = new CCTimer();
     pTimer->initWithTarget(pTarget, pfnSelector, fInterval, repeat, delay);
     ccArrayAppendObject(pElement->timers, pTimer);
-    pTimer->release();    
+    pTimer->release();
 }
 
 void CCScheduler::unscheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget)
@@ -556,18 +558,18 @@ void CCScheduler::unscheduleAllWithMinPriority(int nMinPriority)
 
     // Updates selectors
     tListEntry *pEntry, *pTmp;
-    if(nMinPriority < 0) 
+    if(nMinPriority < 0)
     {
         DL_FOREACH_SAFE(m_pUpdatesNegList, pEntry, pTmp)
         {
-            if(pEntry->priority >= nMinPriority) 
+            if(pEntry->priority >= nMinPriority)
             {
                 unscheduleUpdateForTarget(pEntry->target);
             }
         }
     }
 
-    if(nMinPriority <= 0) 
+    if(nMinPriority <= 0)
     {
         DL_FOREACH_SAFE(m_pUpdates0List, pEntry, pTmp)
         {
@@ -577,7 +579,7 @@ void CCScheduler::unscheduleAllWithMinPriority(int nMinPriority)
 
     DL_FOREACH_SAFE(m_pUpdatesPosList, pEntry, pTmp)
     {
-        if(pEntry->priority >= nMinPriority) 
+        if(pEntry->priority >= nMinPriority)
         {
             unscheduleUpdateForTarget(pEntry->target);
         }
@@ -705,7 +707,7 @@ bool CCScheduler::isTargetPaused(CCObject *pTarget)
     {
         return pElement->paused;
     }
-    
+
     // We should check update selectors if target does not have custom selectors
 	tHashUpdateEntry *elementUpdate = NULL;
 	HASH_FIND_INT(m_pHashForUpdates, &pTarget, elementUpdate);
@@ -713,7 +715,7 @@ bool CCScheduler::isTargetPaused(CCObject *pTarget)
     {
 		return elementUpdate->entry->paused;
     }
-    
+
     return false;  // should never get here
 }
 
@@ -737,11 +739,11 @@ CCSet* CCScheduler::pauseAllTargetsWithMinPriority(int nMinPriority)
 
     // Updates selectors
     tListEntry *entry, *tmp;
-    if(nMinPriority < 0) 
+    if(nMinPriority < 0)
     {
-        DL_FOREACH_SAFE( m_pUpdatesNegList, entry, tmp ) 
+        DL_FOREACH_SAFE( m_pUpdatesNegList, entry, tmp )
         {
-            if(entry->priority >= nMinPriority) 
+            if(entry->priority >= nMinPriority)
             {
                 entry->paused = true;
                 idsWithSelectors->addObject(entry->target);
@@ -749,7 +751,7 @@ CCSet* CCScheduler::pauseAllTargetsWithMinPriority(int nMinPriority)
         }
     }
 
-    if(nMinPriority <= 0) 
+    if(nMinPriority <= 0)
     {
         DL_FOREACH_SAFE( m_pUpdates0List, entry, tmp )
         {
@@ -758,9 +760,9 @@ CCSet* CCScheduler::pauseAllTargetsWithMinPriority(int nMinPriority)
         }
     }
 
-    DL_FOREACH_SAFE( m_pUpdatesPosList, entry, tmp ) 
+    DL_FOREACH_SAFE( m_pUpdatesPosList, entry, tmp )
     {
-        if(entry->priority >= nMinPriority) 
+        if(entry->priority >= nMinPriority)
         {
             entry->paused = true;
             idsWithSelectors->addObject(entry->target);
@@ -906,12 +908,13 @@ void CCScheduler::update(float dt)
     m_bUpdateHashLocked = false;
 
     m_pCurrentTarget = NULL;
-    
-    
+
+
+    #if (USING_V3_CODE > 0)
     //
     // Functions allocated from another thread
     //
-    
+
     // Testing size is faster than locking / unlocking.
     // And almost never there will be functions scheduled to be called.
     if( !_functionsToPerform.empty() ) {
@@ -924,15 +927,18 @@ void CCScheduler::update(float dt)
             function();
         }
     }
+    #endif // USING_V3_CODE
 }
 
+#if (USING_V3_CODE > 0)
 void CCScheduler::performFunctionInCocosThread(const std::function<void ()> &function)
 {
     _performMutex.lock();
-    
+
     _functionsToPerform.push_back(function);
-    
+
     _performMutex.unlock();
 }
+#endif // USING_V3_CODE
 
 NS_CC_END
