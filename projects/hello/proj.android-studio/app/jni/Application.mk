@@ -1,6 +1,6 @@
 APP_STL := gnustl_static
 
-APP_CPPFLAGS := -frtti -DCC_ENABLE_CHIPMUNK_INTEGRATION=1  -fsigned-char -std=c++11
+APP_CPPFLAGS := -frtti -DCC_ENABLE_CHIPMUNK_INTEGRATION=1  -fsigned-char #-std=c++11
 APP_LDFLAGS := -latomic
 
 #APP_ALLOW_MISSING_DEPS=true

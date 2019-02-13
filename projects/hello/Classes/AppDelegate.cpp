@@ -1,7 +1,7 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
 
-#include <thread>
+//#include <thread>
 
 USING_NS_CC;
 

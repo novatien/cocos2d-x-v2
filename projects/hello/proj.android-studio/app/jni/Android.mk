@@ -10,12 +10,6 @@ include $(CLEAR_VARS)
 #$(call import-add-path,$(LOCAL_PATH)/../../../../../extensions)
 #$(call import-add-path,$(LOCAL_PATH)/../../../../../CocosDenshion/android)
 
-# !!!! dangerous, ONLY for debuging c++ with Android Studio
-ifeq ($(NDK_DEBUG),1)
-  #LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
-endif
-# !!!! dangerous!!!!
-
 LOCAL_MODULE := cocos2dcpp_shared
 
 LOCAL_MODULE_FILENAME := libcocos2dcpp
