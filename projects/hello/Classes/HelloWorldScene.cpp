@@ -8,7 +8,7 @@ CCScene* HelloWorld::scene()
 {
     // 'scene' is an autorelease object
     CCScene *scene = CCScene::create();
-    
+
     // 'layer' is an autorelease object
     HelloWorld *layer = HelloWorld::create();
 
@@ -28,7 +28,7 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
+
     CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
     CCPoint origin = CCDirector::sharedDirector()->getVisibleOrigin();
 
@@ -42,7 +42,7 @@ bool HelloWorld::init()
                                         "CloseSelected.png",
                                         this,
                                         menu_selector(HelloWorld::menuCloseCallback));
-    
+
 	pCloseItem->setPosition(ccp(origin.x + visibleSize.width - pCloseItem->getContentSize().width/2 ,
                                 origin.y + pCloseItem->getContentSize().height/2));
 
@@ -56,9 +56,9 @@ bool HelloWorld::init()
 
     // add a label shows "Hello World"
     // create and initialize a label
-    
+
     CCLabelTTF* pLabel = CCLabelTTF::create("Hello World", "Arial", 24);
-    
+
     // position the label on the center of the screen
     pLabel->setPosition(ccp(origin.x + visibleSize.width/2,
                             origin.y + visibleSize.height - pLabel->getContentSize().height));
@@ -84,7 +84,7 @@ bool HelloWorld::init()
     req->setRequestType(CCHttpRequest::kHttpGet);
     req->setResponseCallback(this, httpresponse_selector(HelloWorld::onHttp));
     CCHttpClient::getInstance()->send(req);
-    
+
     return true;
 }
 
@@ -103,6 +103,6 @@ void HelloWorld::menuCloseCallback(CCObject* pSender)
 
 void HelloWorld::onHttp(CCHttpClient* client, CCHttpResponse* response)
 {
-    std::string buf(response->getResponseData()->data());
-    CCLog("%s:%s", __FUNCTION__, buf.data());
+    // std::string buf(response->getResponseData()->data());
+    CCLog("%s callback.", __FUNCTION__);
 }

@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 #include <stdarg.h>
 #include <string>
+#include <cstring>
 #include <functional>
 #include "CCObject.h"
 

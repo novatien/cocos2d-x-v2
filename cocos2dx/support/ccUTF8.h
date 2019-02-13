@@ -29,6 +29,7 @@
 #include "platform/CCPlatformMacros.h"
 #include <vector>
 #include <string>
+#include <cstring>
 
 NS_CC_BEGIN
 

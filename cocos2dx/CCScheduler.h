@@ -27,14 +27,6 @@ THE SOFTWARE.
 #ifndef __CCSCHEDULER_H__
 #define __CCSCHEDULER_H__
 
-#define USING_V3_CODE 0
-
-#if (USING_V3_CODE > 0)
-#include <functional>
-#include <mutex>
-#include <vector>
-#endif // USING_V3_CODE
-
 #include "cocoa/CCObject.h"
 #include "support/data_support/uthash.h"
 
@@ -65,7 +57,7 @@ public:
      *  @lua NA
      */
     CCTimer(void);
-
+    
     /** get interval in seconds */
     float getInterval(void) const;
     /** set interval in seconds */
@@ -74,34 +66,34 @@ public:
      *  @lua NA
      */
     SEL_SCHEDULE getSelector() const;
-
-    /** Initializes a timer with a target and a selector.
+    
+    /** Initializes a timer with a target and a selector. 
      *  @lua NA
      */
     bool initWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector);
-
-    /** Initializes a timer with a target, a selector and an interval in seconds, repeat in number of times to repeat, delay in seconds.
+    
+    /** Initializes a timer with a target, a selector and an interval in seconds, repeat in number of times to repeat, delay in seconds. 
      *  @lua NA
      */
     bool initWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector, float fSeconds, unsigned int nRepeat, float fDelay);
-
+    
     /** Initializes a timer with a script callback function and an interval in seconds. */
     bool initWithScriptHandler(int nHandler, float fSeconds);
-
+    
     /** triggers the timer */
     void update(float dt);
-
+    
 public:
-    /** Allocates a timer with a target and a selector.
+    /** Allocates a timer with a target and a selector. 
      *  @lua NA
      */
     static CCTimer* timerWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector);
-
-    /** Allocates a timer with a target, a selector and an interval in seconds.
+    
+    /** Allocates a timer with a target, a selector and an interval in seconds. 
      *  @lua NA
      */
     static CCTimer* timerWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector, float fSeconds);
-
+    
     /** Allocates a timer with a script callback function and an interval in seconds. */
     static CCTimer* timerWithScriptHandler(int nHandler, float fSeconds);
     /**
@@ -119,7 +111,7 @@ protected:
     float m_fDelay;
     float m_fInterval;
     SEL_SCHEDULE m_pfnSelector;
-
+    
     int m_nScriptHandler;
 };
 
@@ -183,7 +175,7 @@ public:
      */
     void scheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget, float fInterval, unsigned int repeat, float delay, bool bPaused);
 
-    /** calls scheduleSelector with kCCRepeatForever and a 0 delay
+    /** calls scheduleSelector with kCCRepeatForever and a 0 delay 
      *  @js NA
      *  @lua NA
      */
@@ -225,7 +217,7 @@ public:
      @lua NA
      */
     void unscheduleAll(void);
-
+    
     /** Unschedules all selectors from all targets with a minimum priority.
       You should only call this with kCCPriorityNonSystemMin or higher.
       @since v2.0.0
@@ -241,8 +233,8 @@ public:
      @js NA
      */
     unsigned int scheduleScriptFunc(unsigned int nHandler, float fInterval, bool bPaused);
-
-    /** Unschedule a script entry.
+    
+    /** Unschedule a script entry. 
      *  @js NA
      */
     void unscheduleScriptEntry(unsigned int uScheduleScriptEntryID);
@@ -290,13 +282,6 @@ public:
      */
     void resumeTargets(CCSet* targetsToResume);
 
-    /** Calls a function on the cocos2d thread. Useful when you need to call a cocos2d function
-     from another thread. This function is thread safe.
-     */
-    #if (USING_V3_CODE > 0)
-    void performFunctionInCocosThread(const std::function<void ()> &function);
-    #endif // USING_V3_CODE
-
 private:
     void removeHashElement(struct _hashSelectorEntry *pElement);
     void removeUpdateFromHash(struct _listEntry *entry);
@@ -324,12 +309,6 @@ protected:
     // If true unschedule will not remove anything from a hash. Elements will only be marked for deletion.
     bool m_bUpdateHashLocked;
     CCArray* m_pScriptHandlerEntries;
-
-    #if (USING_V3_CODE > 0)
-    // Used for "perform Function"
-    std::vector<std::function<void()> > _functionsToPerform;
-    std::mutex _performMutex;
-    #endif
 };
 
 // end of global group

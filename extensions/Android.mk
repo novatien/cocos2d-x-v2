@@ -5,7 +5,7 @@ LOCAL_MODULE    := cocos_extension_static
 
 LOCAL_MODULE_FILENAME := libextension
 
-LOCAL_SRC_FILES := \
+LOCAL_SRC_FILES := AssetsManager/AssetsManager.cpp \
 CCBReader/CCBFileLoader.cpp \
 CCBReader/CCBReader.cpp \
 CCBReader/CCControlButtonLoader.cpp \
@@ -48,6 +48,8 @@ GUI/CCScrollView/CCTableViewCell.cpp \
 GUI/CCScrollView/CCSorting.cpp \
 GUI/CCEditBox/CCEditBox.cpp \
 GUI/CCEditBox/CCEditBoxImplAndroid.cpp \
+network/HttpClient.cpp \
+network/WebSocket.cpp \
 physics_nodes/CCPhysicsDebugNode.cpp \
 physics_nodes/CCPhysicsSprite.cpp \
 LocalStorage/LocalStorageAndroid.cpp \
@@ -101,7 +103,7 @@ CocoStudio/ActionTimeline/CCActionTimeline.cpp \
 CocoStudio/ActionTimeline/CCActionTimelineCache.cpp \
 CocoStudio/ActionTimeline/CCFrame.cpp \
 CocoStudio/ActionTimeline/CCNodeReader.cpp \
-CocoStudio/ActionTimeline/CCTimeline.cpp \
+CocoStudio/ActionTimeline/CCTimeLine.cpp \
 CocoStudio/Reader/SceneReader.cpp \
 CocoStudio/Reader/GUIReader.cpp \
 CocoStudio/Reader/WidgetReader/WidgetReader.cpp \
@@ -128,6 +130,7 @@ CocoStudio/Trigger/ObjectFactory.cpp \
 CocoStudio/Trigger/TriggerBase.cpp \
 CocoStudio/Trigger/TriggerMng.cpp \
 CocoStudio/Trigger/TriggerObj.cpp \
+CocoStudio/CocoStudio.cpp \
 spine/Animation.cpp \
 spine/AnimationState.cpp \
 spine/AnimationStateData.cpp \
@@ -148,21 +151,13 @@ spine/SlotData.cpp \
 spine/extension.cpp \
 spine/CCSkeletonAnimation.cpp \
 spine/CCSkeleton.cpp \
-spine/spine-cocos2dx.cpp
-
-## HTTP
-LOCAL_SRC_FILES += AssetsManager/AssetsManager.cpp
-LOCAL_SRC_FILES += network/HttpClient.cpp
-
-## websocket
-LOCAL_SRC_FILES += network/WebSocket.cpp
+spine/spine-cocos2dx.cpp \
 
 LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocosdenshion_static
+LOCAL_WHOLE_STATIC_LIBRARIES += cocos_curl_static
 LOCAL_WHOLE_STATIC_LIBRARIES += box2d_static
 LOCAL_WHOLE_STATIC_LIBRARIES += chipmunk_static
-
-LOCAL_WHOLE_STATIC_LIBRARIES += cocos_curl_static
 LOCAL_WHOLE_STATIC_LIBRARIES += libwebsockets_static
 
 LOCAL_CFLAGS += -DCC_ENABLE_CHIPMUNK_INTEGRATION=1
@@ -176,15 +171,16 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
                            $(LOCAL_PATH)/GUI/CCScrollView \
                            $(LOCAL_PATH)/network \
                            $(LOCAL_PATH)/LocalStorage \
-						               $(LOCAL_PATH)/CocoStudio/Armature
+                           $(LOCAL_PATH)/CocoStudio/Armature \
+                           $(LOCAL_PATH)/CocoStudio
 
 LOCAL_CFLAGS := -fexceptions
-
+                    
 include $(BUILD_STATIC_LIBRARY)
 
 $(call import-module,cocos2dx)
 $(call import-module,CocosDenshion/android)
+$(call import-module,cocos2dx/platform/third_party/android/prebuilt/libcurl)
 $(call import-module,external/Box2D)
 $(call import-module,external/chipmunk)
-$(call import-module,cocos2dx/platform/third_party/android/prebuilt/libcurl)
 $(call import-module,external/libwebsockets/android)

@@ -33,7 +33,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
