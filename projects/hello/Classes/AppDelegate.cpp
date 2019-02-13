@@ -32,7 +32,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     pDirector->runWithScene(pScene);
 
-    //
+    #if 0
     CCLog("> Current cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
     std::thread th ([pDirector]() {
         CCLog("> Hello from thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
@@ -41,6 +41,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
         });
     });
     th.join();
+    #endif
 
     return true;
 }
