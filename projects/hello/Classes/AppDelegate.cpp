@@ -3,13 +3,33 @@
 
 //#include <thread>
 
+// fix curl with android x86 (ndk-r14) https://stackoverflow.com/a/15310563/5443510
+#if __i386 && (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include <setjmp.h>
+#ifdef __cplusplus
+extern "C" {
+    void siglongjmp(jmp_buf env, int val);
+    int sigsetjmp(jmp_buf env, int savemask);
+}
+#endif
+void siglongjmp(jmp_buf env, int val)
+{
+    longjmp(env, val);
+}
+int sigsetjmp(jmp_buf env, int savemask)
+{
+    return setjmp(env);
+}
+#endif
+// fix curl end
+
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
 
 }
 
-AppDelegate::~AppDelegate() 
+AppDelegate::~AppDelegate()
 {
 }
 
@@ -19,7 +39,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     CCEGLView* pEGLView = CCEGLView::sharedOpenGLView();
 
     pDirector->setOpenGLView(pEGLView);
-	
+
     // turn on display FPS
     pDirector->setDisplayStats(true);
 
