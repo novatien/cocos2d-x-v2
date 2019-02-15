@@ -31,9 +31,13 @@ Set Android NDK location:
 
 1. Update libs to 3.16
     - libjpeg
-    - libpng
-    - libtiff
+    - libpng (1.6.16)
+    - libtiff (20120922)
     - libwebp
+    - libcurl (7.52.1)
+    - openssl (OpenSSL 1.1.0c  10 Nov 2016)
+    - zlib (1.2.8)
+
 2. Remove armeabi
 3. Not build http & websocket (maybe rebuild old curl version to support http)
 4. Android Studio support
@@ -43,7 +47,6 @@ Set Android NDK location:
 8. Support 64bit Android
 9. c++11 runtime
 10. Add CCScheduler::performFunctionInCocosThread
-11. libcurl support Android arm64
 12. libwebsocket support Android arm64
 
     ```c++
