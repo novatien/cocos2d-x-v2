@@ -30,8 +30,8 @@
     <output url="file://$MODULE_DIR$/build/intermediates/classes/debug" />
     <output-test url="file://$MODULE_DIR$/build/intermediates/classes/test/debug" />
     <exclude-output />
-    <content url="file://$USER_HOME$/Documents/sdk/android/android-ndk-r10d/sources/android/cpufeatures">
-      <sourceFolder url="file://$USER_HOME$/Documents/sdk/android/android-ndk-r10d/sources/android/cpufeatures" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../../../android-ndk-r13b/sources/android/cpufeatures">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../android-ndk-r13b/sources/android/cpufeatures" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../../../../CocosDenshion/android">
       <sourceFolder url="file://$MODULE_DIR$/../../../../CocosDenshion/android" isTestSource="false" />
@@ -137,6 +137,9 @@
     </content>
     <content url="file://$MODULE_DIR$/../../../../extensions/CCBReader">
       <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/CCBReader" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../extensions/CocoStudio">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/CocoStudio" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../../../../extensions/CocoStudio/Action">
       <sourceFolder url="file://$MODULE_DIR$/../../../../extensions/CocoStudio/Action" isTestSource="false" />
