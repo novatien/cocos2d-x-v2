@@ -5,7 +5,7 @@ Copyright 2012 Goffredo Marocchi
 Copyright 2012 Ricardo Quesada
 
 http://www.cocos2d-x.org
- 
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -68,7 +68,7 @@ CCGLProgram::~CCGLProgram()
     CCAssert(m_uVertShader == 0, "Vertex Shaders should have been already deleted");
     CCAssert(m_uFragShader == 0, "Fragment Shaders should have been already deleted");
 
-    if (m_uProgram) 
+    if (m_uProgram)
     {
         ccGLDeleteProgram(m_uProgram);
     }
@@ -132,7 +132,7 @@ bool CCGLProgram::initWithVertexShaderByteArray(const GLchar* vShaderByteArray, 
         glAttachShader(m_uProgram, m_uFragShader);
     }
     m_pHashForUniforms = NULL;
-    
+
     CHECK_GL_ERROR_DEBUG();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
@@ -157,7 +157,7 @@ bool CCGLProgram::initWithPrecompiledProgramByteArray(const GLchar* vShaderByteA
     CHECK_GL_ERROR_DEBUG();
     m_pHashForUniforms = NULL;
 
-    CHECK_GL_ERROR_DEBUG();  
+    CHECK_GL_ERROR_DEBUG();
 
     return haveProgram;
 }
@@ -182,16 +182,19 @@ const char* CCGLProgram::description()
 bool CCGLProgram::compileShader(GLuint * shader, GLenum type, const GLchar* source)
 {
     GLint status;
- 
+
     if (!source)
     {
         return false;
     }
-    
+
     const GLchar *sources[] = {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32 && CC_TARGET_PLATFORM != CC_PLATFORM_LINUX && CC_TARGET_PLATFORM != CC_PLATFORM_MAC)
+
 #if CC_TARGET_PLATFORM == CC_PLATFORM_NACL
         "precision highp float;\n"
+#elif CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+        "#version 100\n precision mediump float;\n precision mediump int;\n"
 #else
         (type == GL_VERTEX_SHADER ? "precision highp float;\n" : "precision mediump float;\n"),
 #endif
@@ -218,10 +221,10 @@ bool CCGLProgram::compileShader(GLuint * shader, GLenum type, const GLchar* sour
         GLsizei length;
 		glGetShaderiv(*shader, GL_SHADER_SOURCE_LENGTH, &length);
 		GLchar* src = (GLchar *)malloc(sizeof(GLchar) * length);
-		
+
 		glGetShaderSource(*shader, length, NULL, src);
 		CCLOG("cocos2d: ERROR: Failed to compile shader:\n%s", src);
-        
+
         if (type == GL_VERTEX_SHADER)
         {
             CCLOG("cocos2d: %s", vertexShaderLog());
@@ -251,23 +254,23 @@ void CCGLProgram::updateUniforms()
     m_uUniforms[kCCUniformPMatrix] = glGetUniformLocation(m_uProgram, kCCUniformPMatrix_s);
 	m_uUniforms[kCCUniformMVMatrix] = glGetUniformLocation(m_uProgram, kCCUniformMVMatrix_s);
 	m_uUniforms[kCCUniformMVPMatrix] = glGetUniformLocation(m_uProgram, kCCUniformMVPMatrix_s);
-	
+
 	m_uUniforms[kCCUniformTime] = glGetUniformLocation(m_uProgram, kCCUniformTime_s);
 	m_uUniforms[kCCUniformSinTime] = glGetUniformLocation(m_uProgram, kCCUniformSinTime_s);
 	m_uUniforms[kCCUniformCosTime] = glGetUniformLocation(m_uProgram, kCCUniformCosTime_s);
-	
+
 	m_bUsesTime = (
                  m_uUniforms[kCCUniformTime] != -1 ||
                  m_uUniforms[kCCUniformSinTime] != -1 ||
                  m_uUniforms[kCCUniformCosTime] != -1
                  );
-    
+
 	m_uUniforms[kCCUniformRandom01] = glGetUniformLocation(m_uProgram, kCCUniformRandom01_s);
 
     m_uUniforms[kCCUniformSampler] = glGetUniformLocation(m_uProgram, kCCUniformSampler_s);
 
     this->use();
-    
+
     // Since sample most probably won't change, set it to 0 now.
     this->setUniformLocationWith1i(m_uUniforms[kCCUniformSampler], 0);
 }
@@ -275,7 +278,7 @@ void CCGLProgram::updateUniforms()
 bool CCGLProgram::link()
 {
     CCAssert(m_uProgram != 0, "Cannot link invalid program");
- 
+
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
     if(!m_hasShaderCompiler)
     {
@@ -285,19 +288,19 @@ bool CCGLProgram::link()
 #endif
 
     GLint status = GL_TRUE;
-    
+
     glLinkProgram(m_uProgram);
 
     if (m_uVertShader)
     {
         glDeleteShader(m_uVertShader);
     }
-    
+
     if (m_uFragShader)
     {
         glDeleteShader(m_uFragShader);
     }
-    
+
     m_uVertShader = m_uFragShader = 0;
 #if (defined(COCOS2D_DEBUG) && COCOS2D_DEBUG) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
     glGetProgramiv(m_uProgram, GL_LINK_STATUS, &status);
@@ -366,7 +369,7 @@ bool CCGLProgram::updateUniformLocation(GLint location, GLvoid* data, unsigned i
     {
         return false;
     }
-    
+
     bool updated = true;
     tHashUniformEntry *element = NULL;
     HASH_FIND_INT(m_pHashForUniforms, &location, element);
@@ -403,14 +406,14 @@ GLint CCGLProgram::getUniformLocationForName(const char* name)
 {
     CCAssert(name != NULL, "Invalid uniform name" );
     CCAssert(m_uProgram != 0, "Invalid operation. Cannot get uniform location when program is not initialized");
-    
+
     return glGetUniformLocation(m_uProgram, name);
 }
 
 void CCGLProgram::setUniformLocationWith1i(GLint location, GLint i1)
 {
     bool updated =  updateUniformLocation(location, &i1, sizeof(i1)*1);
-    
+
     if( updated )
     {
         glUniform1i( (GLint)location, i1);
@@ -421,7 +424,7 @@ void CCGLProgram::setUniformLocationWith2i(GLint location, GLint i1, GLint i2)
 {
     GLint ints[2] = {i1,i2};
     bool updated =  updateUniformLocation(location, ints, sizeof(ints));
-    
+
     if( updated )
     {
         glUniform2i( (GLint)location, i1, i2);
@@ -432,7 +435,7 @@ void CCGLProgram::setUniformLocationWith3i(GLint location, GLint i1, GLint i2, G
 {
     GLint ints[3] = {i1,i2,i3};
     bool updated =  updateUniformLocation(location, ints, sizeof(ints));
-    
+
     if( updated )
     {
         glUniform3i( (GLint)location, i1, i2, i3);
@@ -443,7 +446,7 @@ void CCGLProgram::setUniformLocationWith4i(GLint location, GLint i1, GLint i2, G
 {
     GLint ints[4] = {i1,i2,i3,i4};
     bool updated =  updateUniformLocation(location, ints, sizeof(ints));
-    
+
     if( updated )
     {
         glUniform4i( (GLint)location, i1, i2, i3, i4);
@@ -453,7 +456,7 @@ void CCGLProgram::setUniformLocationWith4i(GLint location, GLint i1, GLint i2, G
 void CCGLProgram::setUniformLocationWith2iv(GLint location, GLint* ints, unsigned int numberOfArrays)
 {
     bool updated =  updateUniformLocation(location, ints, sizeof(int)*2*numberOfArrays);
-    
+
     if( updated )
     {
         glUniform2iv( (GLint)location, (GLsizei)numberOfArrays, ints );
@@ -463,7 +466,7 @@ void CCGLProgram::setUniformLocationWith2iv(GLint location, GLint* ints, unsigne
 void CCGLProgram::setUniformLocationWith3iv(GLint location, GLint* ints, unsigned int numberOfArrays)
 {
     bool updated =  updateUniformLocation(location, ints, sizeof(int)*3*numberOfArrays);
-    
+
     if( updated )
     {
         glUniform3iv( (GLint)location, (GLsizei)numberOfArrays, ints );
@@ -473,7 +476,7 @@ void CCGLProgram::setUniformLocationWith3iv(GLint location, GLint* ints, unsigne
 void CCGLProgram::setUniformLocationWith4iv(GLint location, GLint* ints, unsigned int numberOfArrays)
 {
     bool updated =  updateUniformLocation(location, ints, sizeof(int)*4*numberOfArrays);
-    
+
     if( updated )
     {
         glUniform4iv( (GLint)location, (GLsizei)numberOfArrays, ints );
@@ -569,16 +572,16 @@ void CCGLProgram::setUniformsForBuiltins()
     kmMat4 matrixP;
 	kmMat4 matrixMV;
 	kmMat4 matrixMVP;
-	
+
 	kmGLGetMatrix(KM_GL_PROJECTION, &matrixP);
 	kmGLGetMatrix(KM_GL_MODELVIEW, &matrixMV);
-	
+
 	kmMat4Multiply(&matrixMVP, &matrixP, &matrixMV);
-    
+
     setUniformLocationWithMatrix4fv(m_uUniforms[kCCUniformPMatrix], matrixP.mat, 1);
     setUniformLocationWithMatrix4fv(m_uUniforms[kCCUniformMVMatrix], matrixMV.mat, 1);
     setUniformLocationWithMatrix4fv(m_uUniforms[kCCUniformMVPMatrix], matrixMVP.mat, 1);
-	
+
 	if(m_bUsesTime)
     {
 		CCDirector *director = CCDirector::sharedDirector();
@@ -586,12 +589,12 @@ void CCGLProgram::setUniformsForBuiltins()
 		// Cocos2D doesn't store a high precision time value, so this will have to do.
 		// Getting Mach time per frame per shader using time could be extremely expensive.
         float time = director->getTotalFrames() * director->getAnimationInterval();
-		
+
         setUniformLocationWith4f(m_uUniforms[kCCUniformTime], time/10.0, time, time*2, time*4);
         setUniformLocationWith4f(m_uUniforms[kCCUniformSinTime], time/8.0, time/4.0, time/2.0, sinf(time));
         setUniformLocationWith4f(m_uUniforms[kCCUniformCosTime], time/8.0, time/4.0, time/2.0, cosf(time));
 	}
-	
+
 	if (m_uUniforms[kCCUniformRandom01] != -1)
     {
         setUniformLocationWith4f(m_uUniforms[kCCUniformRandom01], CCRANDOM_0_1(), CCRANDOM_0_1(), CCRANDOM_0_1(), CCRANDOM_0_1());
@@ -602,17 +605,17 @@ void CCGLProgram::reset()
 {
     m_uVertShader = m_uFragShader = 0;
     memset(m_uUniforms, 0, sizeof(m_uUniforms));
-    
+
 
     // it is already deallocated by android
     //ccGLDeleteProgram(m_uProgram);
     m_uProgram = 0;
 
-    
+
     tHashUniformEntry *current_element, *tmp;
-    
+
     // Purge uniform hash
-    HASH_ITER(hh, m_pHashForUniforms, current_element, tmp) 
+    HASH_ITER(hh, m_pHashForUniforms, current_element, tmp)
     {
         HASH_DEL(m_pHashForUniforms, current_element);
         free(current_element->value);
