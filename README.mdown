@@ -1,6 +1,9 @@
 cocos2d-x
 =========
 
+## Games
+1. https://play.google.com/store/apps/details?id=com.sosc.firstfantasy1
+
 ##
 <p>Support update 3rd libs via PayPal:
 <br>  <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=P7H86JDPVCA3E" rel="nofollow"><img src="https://camo.githubusercontent.com/bce14c8e2e39ba0464551b34602b4c60c182526b/68747470733a2f2f7777772e70617970616c6f626a656374732e636f6d2f656e5f55532f692f62746e2f62746e5f646f6e6174655f4c472e676966" alt="PayPal" data-canonical-src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" style="max-width:100%;"></a> $10, $50, $100, others.</p>
@@ -64,7 +67,7 @@ Set Android NDK location:
 
 ## TODO
 
-1.  [ ] NDK >= r13b
+1.  [x] NDK >= r13b
     ​
 
 [cocos2d-x][1] is a multi-platform 2D game framework in C++, branched on
