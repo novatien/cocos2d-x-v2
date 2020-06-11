@@ -2,6 +2,8 @@
 
 #include "network/HttpClient.h"
 
+#include <math.h>
+
 USING_NS_CC;
 
 CCScene* HelloWorld::scene()
@@ -85,6 +87,7 @@ bool HelloWorld::init()
     req->setResponseCallback(this, httpresponse_selector(HelloWorld::onHttp));
     CCHttpClient::getInstance()->send(req);
 
+    CCLOG("atoi test = %d", atoi("177"));
     return true;
 }
 
