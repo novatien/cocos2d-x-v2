@@ -80,6 +80,7 @@ THE SOFTWARE.
     NSRect          originalWinRect_; // Original size and position
     
     float           frameZoomFactor_;
+    bool            mousePressed;
 }
 
 @property (nonatomic, readwrite, assign) id<MacEventDelegate> eventDelegate;
@@ -111,6 +112,7 @@ THE SOFTWARE.
 -(int) getWidth;
 -(int) getHeight;
 -(void) swapBuffers;
+-(float) getFrameZoomFactor;
 
 -(void) setFullScreen:(BOOL)fullscreen;
 
