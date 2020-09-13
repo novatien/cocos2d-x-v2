@@ -61,7 +61,7 @@
 		[window setContentView:glView];
 		[window setTitle:@"https://github.com/c0i/cocos2d-x-v2.git"];
 		[window makeKeyAndOrderFront:self];
-		[window setAcceptsMouseMovedEvents:NO];
+		[window setAcceptsMouseMovedEvents:YES];
         [window center];
 
 		cocos2d::CCApplication::sharedApplication()->run();
