@@ -36,7 +36,7 @@
 		// create the window
 		// note that using NSResizableWindowMask causes the window to be a little
 		// smaller and therefore ipad graphics are not loaded
-        NSRect rect = NSMakeRect(200, 200, 480, 320);
+        NSRect rect = NSMakeRect(200, 200, 960, 480);
 		window = [[NSWindow alloc] initWithContentRect:rect
 			styleMask:( NSClosableWindowMask | NSTitledWindowMask )
 			backing:NSBackingStoreBuffered
@@ -59,9 +59,10 @@
 		// set window parameters
 		[window becomeFirstResponder];
 		[window setContentView:glView];
-		[window setTitle:@"HelloCpp"];
+		[window setTitle:@"https://github.com/c0i/cocos2d-x-v2.git"];
 		[window makeKeyAndOrderFront:self];
 		[window setAcceptsMouseMovedEvents:NO];
+        [window center];
 
 		cocos2d::CCApplication::sharedApplication()->run();
 	}
