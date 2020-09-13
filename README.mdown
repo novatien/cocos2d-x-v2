@@ -50,7 +50,7 @@ Set Android NDK location:
 8. Support 64bit Android
 9. c++11 runtime
 10. Add CCScheduler::performFunctionInCocosThread
-12. libwebsocket support Android arm64
+11. libwebsocket support Android arm64
 
     ```c++
     CCLog("> Current cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
@@ -63,6 +63,8 @@ Set Android NDK location:
     th.join();
     ```
 
+12. [ImGui](https://github.com/ocornut/imgui) 1.79 on macOS
+    ![](/Users/admin/repos/cocos2d-x-v2/document/imgui.png)
 
 
 ## TODO
