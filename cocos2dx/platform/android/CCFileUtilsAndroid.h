@@ -31,6 +31,13 @@
 #include <string>
 #include <vector>
 
+#define CC_USE_ASSET_MANAGER 1
+
+#if CC_USE_ASSET_MANAGER
+#include "android/asset_manager.h"
+#include "android/asset_manager_jni.h"
+#endif // CC_USE_ASSET_MANAGER
+
 NS_CC_BEGIN
 
 /**
@@ -60,6 +67,16 @@ public:
     
 private:
     unsigned char* doGetFileData(const char* pszFileName, const char* pszMode, unsigned long * pSize, bool forAsync);
+
+#if CC_USE_ASSET_MANAGER
+    // using AAsset to read file
+public:
+    static void setAssetManager(AAssetManager *assetManager);
+    static AAssetManager *getAssetManager();
+private:
+    unsigned char *readFileWithAsset(const std::string &fullPath, unsigned long *pSize) const;
+    static AAssetManager *s_assetManager;
+#endif // #if CC_USE_ASSET_MANAGER
 };
 
 // end of platform group

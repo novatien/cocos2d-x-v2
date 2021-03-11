@@ -33,6 +33,10 @@ NS_CC_BEGIN
 // record the zip on the resource path
 static ZipFile *s_pZipFile = NULL;
 
+#if CC_USE_ASSET_MANAGER
+AAssetManager *CCFileUtilsAndroid::s_assetManager = NULL;
+#endif // #if CC_USE_ASSET_MANAGER
+
 CCFileUtils* CCFileUtils::sharedFileUtils()
 {
     if (s_sharedFileUtils == NULL)
@@ -132,6 +136,9 @@ unsigned char* CCFileUtilsAndroid::doGetFileData(const char* pszFileName, const 
     
     if (fullPath[0] != '/')
     {
+#if CC_USE_ASSET_MANAGER
+    pData = readFileWithAsset(fullPath, pSize);
+#else
         if (forAsync)
         {
             pData = s_pZipFile->getFileData(fullPath.c_str(), pSize, s_pZipFile->_dataThread);
@@ -140,6 +147,7 @@ unsigned char* CCFileUtilsAndroid::doGetFileData(const char* pszFileName, const 
         {
             pData = s_pZipFile->getFileData(fullPath.c_str(), pSize);
         }
+#endif
     }
     else
     {
@@ -193,5 +201,64 @@ string CCFileUtilsAndroid::getWritablePath()
         return "";
     }
 }
+
+#if CC_USE_ASSET_MANAGER
+void CCFileUtilsAndroid::setAssetManager(AAssetManager *assetManager)
+{
+    s_assetManager = assetManager;
+}
+
+AAssetManager *CCFileUtilsAndroid::getAssetManager()
+{
+    return s_assetManager;
+}
+
+unsigned char *CCFileUtilsAndroid::readFileWithAsset(const std::string &fullPath, unsigned long *pSize) const
+{
+    static const std::string apkprefix("assets/");
+    if (s_assetManager == NULL)
+    {
+        CCLOG("%s CCFileUtilsAndroid::s_assetManager is NULL", __FUNCTION__ );
+        *pSize = 0;
+        return NULL;
+    }
+
+    string relativePath = string();
+    size_t position = fullPath.find(apkprefix);
+    if (0 == position)
+    {
+        // "assets/" is at the beginning of the path and we don't want it
+        relativePath += fullPath.substr(apkprefix.size());
+    }
+    else
+    {
+        relativePath = fullPath;
+    }
+
+    AAsset* asset = AAssetManager_open(s_assetManager, relativePath.data(), AASSET_MODE_UNKNOWN);
+    if (NULL == asset)
+    {
+        *pSize = 0;
+        return NULL;
+    }
+
+    auto size = AAsset_getLength(asset);
+    unsigned char *buf = new unsigned char[size];
+
+    int readsize = AAsset_read(asset, buf, size);
+    AAsset_close(asset);
+
+    if (readsize < size)
+    {
+        if (readsize >= 0)
+        {
+            buf = (unsigned char *) realloc(buf, readsize);
+        }
+    }
+    *pSize = readsize;
+
+    return buf;
+}
+#endif // #if CC_USE_ASSET_MANAGER
 
 NS_CC_END
