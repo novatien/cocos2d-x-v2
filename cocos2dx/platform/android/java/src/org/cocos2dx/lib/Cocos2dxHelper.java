@@ -78,6 +78,7 @@ public class Cocos2dxHelper {
         }
         Cocos2dxHelper.sCocos2dSound = new Cocos2dxSound(pContext, simultaneousStreams);
 		Cocos2dxHelper.sAssetManager = pContext.getAssets();
+		Cocos2dxHelper.nativeSetContext(pContext, Cocos2dxHelper.sAssetManager);
 		Cocos2dxBitmap.setContext(pContext);
 		Cocos2dxETCLoader.setContext(pContext);
 	}
@@ -95,6 +96,8 @@ public class Cocos2dxHelper {
 	// ===========================================================
 
 	private static native void nativeSetApkPath(final String pApkPath);
+
+	private static native void nativeSetContext(final Context pContext, final AssetManager pAssetManager);
 
 	private static native void nativeSetEditTextDialogResult(final byte[] pBytes);
 
