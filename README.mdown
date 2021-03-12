@@ -68,6 +68,9 @@ Set Android NDK location:
 12. [ImGui](https://github.com/ocornut/imgui) 1.79 on macOS
     ![](/Users/admin/repos/cocos2d-x-v2/document/imgui.png)
 
+13. fix [getFileData](https://github.com/c0i/cocos2d-x-v2/blob/master/cocos2dx/platform/CCFileUtils.h#L99) crash when multi thread, [commit](https://github.com/c0i/cocos2d-x-v2/commit/38853092c1b105a4bbc160e4d13a7b9038df50a6).
+
+14. [Preserve EGL context when the GLSurfaceView is paused](https://github.com/c0i/cocos2d-x-v2/commit/b1657240fee1cf60a3d080ac3f6585419afbe7e2)
 
 ## TODO
 
