@@ -75,6 +75,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	protected void initView() {
 		this.setEGLContextClientVersion(2);
 		this.setFocusableInTouchMode(true);
+		//https://developer.android.com/reference/android/opengl/GLSurfaceView#setPreserveEGLContextOnPause(boolean)
+		this.setPreserveEGLContextOnPause(true);
 
 		Cocos2dxGLSurfaceView.mCocos2dxGLSurfaceView = this;
 		Cocos2dxGLSurfaceView.sCocos2dxTextInputWraper = new Cocos2dxTextInputWraper(this);
@@ -179,8 +181,9 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		});
 		
 		this.setRenderMode(RENDERMODE_WHEN_DIRTY);
-		
-		//super.onPause();
+
+		// https://developer.android.com/reference/android/opengl/GLSurfaceView#onPause()
+		super.onPause();
 	}
 
 	@Override
