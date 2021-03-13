@@ -344,8 +344,28 @@ public:
     void registerScriptHandler(int nFunID,int nScriptEventType);
     void unregisterScriptHandler(int nScriptEventType);
     int  getScriptHandler(int nScriptEventType);
+    void setBlockScroll(bool blockScroll);
 private:
     std::map<int,int> m_mapScriptHandler;
+
+    // code from cocos2d-x v3
+    // https://github.com/cocos2d/cocos2d-x/blob/a0df0063fc826e21c34689e9f78de9a1833547c7/cocos/ui/UIScrollView.cpp#L922
+    // touch move speed dynamics start
+private:
+    void gatherTouchMove(const CCPoint& delta);
+    CCPoint calculateTouchMoveVelocity() const;
+    CCPoint flattenVectorByDirection(const CCPoint& vector);
+
+    // Touch move speed
+    std::list<CCPoint> _touchMoveDisplacements;
+    std::list<float> _touchMoveTimeDeltas;
+    long long _touchMovePreviousTimestamp;
+    float _touchTotalTimeThreshold;
+    bool _usingTouchMoveSpeed;
+public:
+    void setUsingTouchMoveSpeed(bool yes);
+    // touch move speed dynamics end
+
 };
 
 // end of GUI group
