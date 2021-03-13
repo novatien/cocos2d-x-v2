@@ -39,6 +39,14 @@ static float convertDistanceFromPointToInch(float pointDis)
     return pointDis * factor / CCDevice::getDPI();
 }
 
+static const int NUMBER_OF_GATHERED_TOUCHES_FOR_MOVE_SPEED = 5;
+static const float FPS = 1.0f / 60.0f;
+static long long getTimeInMilliseconds()
+{
+    struct timeval tv;
+    gettimeofday (&tv, nullptr);
+    return (long long)tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
 
 CCScrollView::CCScrollView()
 : m_fZoomScale(0.0f)
@@ -55,6 +63,9 @@ CCScrollView::CCScrollView()
 , m_pTouches(NULL)
 , m_fMinScale(0.0f)
 , m_fMaxScale(0.0f)
+, _touchMovePreviousTimestamp(0)
+, _touchTotalTimeThreshold(0.5f)
+, _usingTouchMoveSpeed(false)
 {
 
 }
@@ -372,12 +383,12 @@ void CCScrollView::deaccelerateScrolling(float dt)
         this->unschedule(schedule_selector(CCScrollView::deaccelerateScrolling));
         return;
     }
-    
+
     float newX, newY;
     CCPoint maxInset, minInset;
     
     m_pContainer->setPosition(ccpAdd(m_pContainer->getPosition(), m_tScrollDistance));
-    
+
     if (m_bBounceable)
     {
         maxInset = m_fMaxInset;
@@ -388,22 +399,24 @@ void CCScrollView::deaccelerateScrolling(float dt)
         maxInset = this->maxContainerOffset();
         minInset = this->minContainerOffset();
     }
-    
+
     //check to see if offset lies within the inset bounds
     newX     = MIN(m_pContainer->getPosition().x, maxInset.x);
     newX     = MAX(newX, minInset.x);
     newY     = MIN(m_pContainer->getPosition().y, maxInset.y);
     newY     = MAX(newY, minInset.y);
-    
+
     newX = m_pContainer->getPosition().x;
     newY = m_pContainer->getPosition().y;
-    
+
     m_tScrollDistance     = ccpSub(m_tScrollDistance, ccp(newX - m_pContainer->getPosition().x, newY - m_pContainer->getPosition().y));
     m_tScrollDistance     = ccpMult(m_tScrollDistance, SCROLL_DEACCEL_RATE);
     this->setContentOffset(ccp(newX,newY));
-    
-    if ((fabsf(m_tScrollDistance.x) <= SCROLL_DEACCEL_DIST &&
-         fabsf(m_tScrollDistance.y) <= SCROLL_DEACCEL_DIST) ||
+
+
+    bool isMoveStoped = (fabsf(m_tScrollDistance.x) <= SCROLL_DEACCEL_DIST &&
+                         fabsf(m_tScrollDistance.y) <= SCROLL_DEACCEL_DIST);
+    if (isMoveStoped ||
         newY > maxInset.y || newY < minInset.y ||
         newX > maxInset.x || newX < minInset.x ||
         newX == maxInset.x || newX == minInset.x ||
@@ -605,6 +618,14 @@ bool CCScrollView::ccTouchBegan(CCTouch* touch, CCEvent* event)
         return false;
     }
     
+    // Clear gathered touch move information
+    if (_usingTouchMoveSpeed)
+    {
+        _touchMovePreviousTimestamp = getTimeInMilliseconds();
+        _touchMoveDisplacements.clear();
+        _touchMoveTimeDeltas.clear();
+    }
+
     CCRect frame = getViewRect();
 
     //dispatcher does not know about clipping. reject touches outside visible bounds.
@@ -649,7 +670,14 @@ void CCScrollView::ccTouchMoved(CCTouch* touch, CCEvent* event)
     if (m_pTouches->containsObject(touch))
     {
         if (m_pTouches->count() == 1 && m_bDragging)
-        { // scrolling
+        {
+            // Gather touch move information for speed calculation
+            if (_usingTouchMoveSpeed)
+            {
+                gatherTouchMove(touch->getDelta());
+            }
+
+            // scrolling
             CCPoint moveDistance, newPoint, maxInset, minInset;
             CCRect  frame;
             float newX, newY;
@@ -658,6 +686,16 @@ void CCScrollView::ccTouchMoved(CCTouch* touch, CCEvent* event)
 
             newPoint     = this->convertTouchToNodeSpace((CCTouch*)m_pTouches->objectAtIndex(0));
             moveDistance = ccpSub(newPoint, m_tTouchPoint);
+            
+            if (getContentOffset().x < minContainerOffset().x || getContentOffset().x > maxContainerOffset().x)
+            {
+                moveDistance.x /= 3;
+            }
+            
+            if (getContentOffset().y < minContainerOffset().y || getContentOffset().y > maxContainerOffset().y)
+            {
+                moveDistance.y /= 3;
+            }
             
             float dis = 0.0f;
             if (m_eDirection == kCCScrollViewDirectionVertical)
@@ -726,10 +764,20 @@ void CCScrollView::ccTouchEnded(CCTouch* touch, CCEvent* event)
     {
         return;
     }
+
     if (m_pTouches->containsObject(touch))
     {
         if (m_pTouches->count() == 1 && m_bTouchMoved)
         {
+            // Gather the last touch information when released
+            if (_usingTouchMoveSpeed)
+            {
+                gatherTouchMove(touch->getDelta());
+                CCPoint touchMoveVelocity = calculateTouchMoveVelocity();
+                touchMoveVelocity = flattenVectorByDirection(touchMoveVelocity);
+                m_tScrollDistance = ccpMult(touchMoveVelocity, FPS);
+            }
+
             this->schedule(schedule_selector(CCScrollView::deaccelerateScrolling));
         }
         m_pTouches->removeObject(touch);
@@ -806,4 +854,53 @@ int  CCScrollView::getScriptHandler(int nScriptEventType)
     
     return 0;
 }
+
+#pragma mark -
+void CCScrollView::gatherTouchMove(const CCPoint& delta)
+{
+    while(_touchMoveDisplacements.size() >= NUMBER_OF_GATHERED_TOUCHES_FOR_MOVE_SPEED)
+    {
+        _touchMoveDisplacements.pop_front();
+        _touchMoveTimeDeltas.pop_front();
+    }
+    _touchMoveDisplacements.push_back(delta);
+
+    long long timestamp = getTimeInMilliseconds();
+    _touchMoveTimeDeltas.push_back((timestamp - _touchMovePreviousTimestamp) / 1000.0f);
+    _touchMovePreviousTimestamp = timestamp;
+}
+
+CCPoint CCScrollView::calculateTouchMoveVelocity() const
+{
+    float totalTime = 0;
+    for (auto &timeDelta : _touchMoveTimeDeltas)
+    {
+        totalTime += timeDelta;
+    }
+    if (totalTime == 0 || totalTime >= _touchTotalTimeThreshold)
+    {
+        return CCPointZero;
+    }
+    
+    CCPoint totalMovement;
+    for (auto &displacement : _touchMoveDisplacements)
+    {
+        totalMovement = totalMovement + displacement;
+    }
+    return totalMovement / totalTime;
+}
+
+CCPoint CCScrollView::flattenVectorByDirection(const CCPoint& vector)
+{
+    CCPoint result = vector;
+    result.x = (m_eDirection == kCCScrollViewDirectionVertical ? 0 : result.x);
+    result.y = (m_eDirection == kCCScrollViewDirectionHorizontal ? 0 : result.y);
+    return result;
+}
+
+void CCScrollView::setUsingTouchMoveSpeed(bool yes)
+{
+    _usingTouchMoveSpeed = yes;
+}
+
 NS_CC_EXT_END
