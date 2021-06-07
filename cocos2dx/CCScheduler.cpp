@@ -246,7 +246,8 @@ CCScheduler::CCScheduler(void)
 , m_bUpdateHashLocked(false)
 , m_pScriptHandlerEntries(NULL)
 {
-
+    // I don't expect to have more than 30 functions to all per frame
+    _functionsToPerform.reserve(30);
 }
 
 CCScheduler::~CCScheduler(void)
@@ -906,7 +907,33 @@ void CCScheduler::update(float dt)
     m_bUpdateHashLocked = false;
 
     m_pCurrentTarget = NULL;
+
+
+    // Testing size is faster than locking / unlocking.
+    // And almost never there will be functions scheduled to be called.
+    if( !_functionsToPerform.empty() ) {
+        _performMutex.lock();
+        // fixed #4123: Save the callback functions, they must be invoked after '_performMutex.unlock()', otherwise if new functions are added in callback, it will cause thread deadlock.
+        auto temp = std::move(_functionsToPerform);
+        _performMutex.unlock();
+
+        for (const auto &function : temp) {
+            function();
+        }
+    }
 }
 
+// from v3
+void CCScheduler::performFunctionInCocosThread(std::function<void ()> function)
+{
+    std::lock_guard<std::mutex> lock(_performMutex);
+    _functionsToPerform.push_back(std::move(function));
+}
+
+void CCScheduler::removeAllFunctionsToBePerformedInCocosThread()
+{
+    std::unique_lock<std::mutex> lock(_performMutex);
+    _functionsToPerform.clear();
+}
 
 NS_CC_END
