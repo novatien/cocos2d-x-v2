@@ -238,7 +238,7 @@ static THREAD_VOID networkThread(THREAD_VOID)
 }
 
 //Configure curl's timeout property
-static bool configureCURL(CURL *handle)
+static bool configureCURL(CURL *handle, std::string capath = "")
 {
     if (!handle) {
         return false;
@@ -257,8 +257,22 @@ static bool configureCURL(CURL *handle)
     if (code != CURLE_OK) {
         return false;
     }
-    curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0L);
+    
+    
+    if (capath.empty())
+    {
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0L);
+    }
+    else
+    {
+        // @FIX: SSL certificate problem: unable to get local issuer certificate
+        curl_easy_setopt(handle, CURLOPT_CAINFO, capath.c_str());
+        
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 1L);
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 2L);
+    }
+
 
     // FIXED #3224: The subthread of CCHttpClient interrupts main thread if timeout comes.
     // Document is here: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTNOSIGNAL 
@@ -305,7 +319,7 @@ public:
     {
         if (!m_curl)
             return false;
-        if (!configureCURL(m_curl))
+        if (!configureCURL(m_curl, request->getCAPath()))
             return false;
 
         /* get custom header data (if set) */
