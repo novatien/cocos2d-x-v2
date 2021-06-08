@@ -44,38 +44,51 @@ Set Android NDK location:
     - zlib (1.2.8)
 
 2. Remove armeabi
+
 3. Not build http & websocket (maybe rebuild old curl version to support http)
+
 4. Android Studio support
+
 5. Keep iOS,Android,Win32,Mac platform
+
 6. Remove Javascript
+
 7. Add `void CCScheduler::performFunctionInCocosThread(const std::function<void ()> &function)`
+
+   ```c++
+   CCLog("> Current cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+   std::thread th ([pDirector]() {
+       CCLog("> Hello from thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+       pDirector->getScheduler()->performFunctionInCocosThread([]() {
+           CCLog("> Hello from cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+       });
+   });
+   th.join();
+   ```
+
 8. Support 64bit Android
+
 9. c++11 runtime
-10. Add CCScheduler::performFunctionInCocosThread
-11. libwebsocket support Android arm64
 
-    ```c++
-    CCLog("> Current cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
-    std::thread th ([pDirector]() {
-        CCLog("> Hello from thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
-        pDirector->getScheduler()->performFunctionInCocosThread([]() {
-            CCLog("> Hello from cocos thread = %lu", std::hash<std::thread::id>{}(std::this_thread::get_id()));
-        });
-    });
-    th.join();
-    ```
+10. libwebsocket support Android arm64
 
-12. [ImGui](https://github.com/ocornut/imgui) 1.79 on macOS
+11. [ImGui](https://github.com/ocornut/imgui) 1.79 on macOS
     ![](/Users/admin/repos/cocos2d-x-v2/document/imgui.png)
 
-13. fix [getFileData](https://github.com/c0i/cocos2d-x-v2/blob/master/cocos2dx/platform/CCFileUtils.h#L99) crash when multi thread, [commit](https://github.com/c0i/cocos2d-x-v2/commit/38853092c1b105a4bbc160e4d13a7b9038df50a6).
+12. fix [getFileData](https://github.com/c0i/cocos2d-x-v2/blob/master/cocos2dx/platform/CCFileUtils.h#L99) crash when multi thread, [commit](https://github.com/c0i/cocos2d-x-v2/commit/38853092c1b105a4bbc160e4d13a7b9038df50a6).
 
-14. [Preserve EGL context when the GLSurfaceView is paused](https://github.com/c0i/cocos2d-x-v2/commit/b1657240fee1cf60a3d080ac3f6585419afbe7e2)
+13. [Preserve EGL context when the GLSurfaceView is paused](https://github.com/c0i/cocos2d-x-v2/commit/b1657240fee1cf60a3d080ac3f6585419afbe7e2)
+
+14. http: SSL certificate problem: unable to get local issuer certificate
+    (
+    CURLOPT_SSL_VERIFYPEER, 1L
+    CURLOPT_SSL_VERIFYHOST, 2L
+    )
+
 
 ## TODO
 
-1.  [x] NDK >= r13b
-    ​
+1. [x] NDK >= r13b
 
 [cocos2d-x][1] is a multi-platform 2D game framework in C++, branched on
 [cocos2d-iphone][2] and licensed under MIT.
