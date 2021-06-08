@@ -82,7 +82,17 @@ bool HelloWorld::init()
     std::vector<std::string> headers;
     headers.push_back("User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0");
     req->setHeaders(headers);
-    req->setUrl("https://www.baidu.com/");
+    
+    std::string url;
+    url = "https://www.baidu.com/";
+    url = "https://httpbin.org/get";
+//    url = "http://localhost:3000";
+    
+    const char *name = "cacert.pem";
+    auto caCertPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(name);
+    req->setCAPath(caCertPath);
+    
+    req->setUrl(url.c_str());
     req->setRequestType(CCHttpRequest::kHttpGet);
     req->setResponseCallback(this, httpresponse_selector(HelloWorld::onHttp));
     CCHttpClient::getInstance()->send(req);
@@ -106,6 +116,14 @@ void HelloWorld::menuCloseCallback(CCObject* pSender)
 
 void HelloWorld::onHttp(CCHttpClient* client, CCHttpResponse* response)
 {
-    // std::string buf(response->getResponseData()->data());
     CCLog("%s callback.", __FUNCTION__);
+    
+    if (response && response->getResponseData() && response->getResponseData()->data())
+    {
+        std::string buf(response->getResponseData()->data());
+        CCLog("http callback data is (%s)", buf.c_str());
+    }
+    
+    CCLog("is %s, code = (%ld)", response->isSucceed() ? "ok" : "!ok", response->getResponseCode());
+    CCLog("http error msg is (%s)", response->getErrorBuffer());
 }
