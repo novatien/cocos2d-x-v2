@@ -217,6 +217,14 @@ public:
    		return _headers;
    	}
 
+    void setCAPath(std::string capath)
+    {
+        _CAPath = capath;
+    }
+    std::string getCAPath()
+    {
+        return _CAPath;
+    }
 
 protected:
     // properties
@@ -228,6 +236,7 @@ protected:
     SEL_HttpResponse            _pSelector;      /// callback function, e.g. MyLayer::onHttpResponse(CCHttpClient *sender, CCHttpResponse * response)
     void*                       _pUserData;      /// You can add your customed data here 
     std::vector<std::string>    _headers;		      /// custom http headers
+    std::string _CAPath = ""; /// used for CURLOPT_SSL_VERIFYHOST is true
 };
 
 NS_CC_EXT_END
